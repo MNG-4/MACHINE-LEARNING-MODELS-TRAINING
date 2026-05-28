@@ -1,6 +1,4 @@
 # MACHINE-LEARNING-MODELS-TRAINING
-A curated collection of end-to-end machine learning pipelines, scripts, and model-training notebooks across various data domains, including tabular data, speech, and predictive analytics. Optimized for performance and reproducible training workflows
-# MACHINE-LEARNING-MODELS-TRAINING
 
 A curated collection of end-to-end machine learning pipelines, scripts, and model-training notebooks across various data domains, including tabular data, speech, and predictive analytics. Optimized for performance and reproducible training workflows.
 
@@ -8,7 +6,7 @@ A curated collection of end-to-end machine learning pipelines, scripts, and mode
 
 ## 📂 Repository Structure
 
-* **`whisper_kikuyu_kenet_final.ipynb`**: Parameter-efficient automatic speech recognition (ASR) model fine-tuning pipeline.
+* **`whisper_v3_large_turbo.py`**: Parameter-efficient automatic speech recognition (ASR) model fine-tuning pipeline.
 * *(Add your other model notebooks here as you upload them!)*
 
 ---
@@ -20,9 +18,9 @@ An end-to-end pipeline to fine-tune OpenAI's `whisper-large-v3-turbo` on the Kik
 ### 🚀 Features & Architecture
 
 * **Model Base:** `openai/whisper-large-v3-turbo`
-* **Target Language:** Kikuyu (`kik`) / Swahili fallback tokenizer parameters configured for vocabulary matching.
-* **Parameter-Efficient Tuning:** Uses Hugging Face `peft` with **LoRA** targeting `q_proj` and `v_proj` layers to minimize VRAM footprint and training parameters.
-* **Dual-Loss Optimization:** Features a custom `WhisperCTCAuxTrainer` that introduces a **CTC Auxiliary Loss** (weight = 0.3) applied to the encoder hidden states, significantly accelerating low-resource speech recognition convergence.
+* **Target Language:** Kikuyu (`kik`) with Swahili fallback tokenizer parameters configured for initial vocabulary matching.
+* **Parameter-Efficient Tuning:** Uses Hugging Face `peft` with **LoRA** targeting `q_proj` and `v_proj` layers to minimize VRAM footprint.
+* **Dual-Loss Optimization:** Features a custom `WhisperCTCAuxTrainer` that introduces a **CTC Auxiliary Loss** ($\lambda = 0.3$) applied to the encoder hidden states, significantly accelerating low-resource speech recognition convergence.
 * **Robust Preprocessing:** Implements Unicode Normalization (NFC) and custom diacritic mapping tables specific to orthographic representations of Kikuyu vowels.
 
 ### 📊 Dataset Configuration
@@ -38,11 +36,11 @@ The training pipeline consumes the streaming dataset `Anv-ke/kikuyu` from Huggin
 | Parameter | Value | Description |
 | :--- | :--- | :--- |
 | **Learning Rate** | `1e-4` | Peak learning rate with AdamW |
-| **Warmup Steps** | `100` | Linear warmup length |
-| **Max Steps** | `2000` | Total training iterations |
-| **Per-Device Batch Size** | `16` | Effective global batch size of 32 via grad accumulation |
-| **Gradient Accumulation** | `2` | Number of updates to accumulate before backprop |
-| **Mixed Precision** | `bf16` | Bfloat16 training activated for Ampere+ GPUs |
+| **Warmup Steps** | `50` | Linear warmup length |
+| **Max Steps** | `500` | Total training iterations |
+| **Per-Device Batch Size** | `4` | Batch size handled simultaneously per device |
+| **Gradient Accumulation** | `2` | Number of updates to accumulate before backprop (Effective batch size of 8) |
+| **Mixed Precision** | `fp16` | Half-precision floating-point format training activated |
 | **LoRA Rank (r)** | `32` | Dimensional factor for low-rank matrices |
 | **LoRA Alpha ($\alpha$)** | `64` | Scaling factor for adapter weights |
 
@@ -51,4 +49,6 @@ The training pipeline consumes the streaming dataset `Anv-ke/kikuyu` from Huggin
 ## 🛠️ Requirements & Environment
 
 Dependencies vary by project module. For general deep learning and speech modeling components, ensure your environment has access to:
-* `torch`, `transformers`, `peft`, `datasets`, `accelerate`, `bitsandbytes`, `jiwer`, `librosa`, `soundfile`, `evaluate`
+* `torch`, `transformers`, `peft`, `datasets`, `accelerate`, `bitsandbytes`, `jiwer`, `librosa`, `soundfile`, `evaluate`, `unsloth`
+
+
