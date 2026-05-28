@@ -1,54 +1,44 @@
 # MACHINE-LEARNING-MODELS-TRAINING
 
-A curated collection of end-to-end machine learning pipelines, scripts, and model-training notebooks across various data domains, including tabular data, speech, and predictive analytics. Optimized for performance and reproducible training workflows.
+A curated collection of end-to-end machine learning pipelines, engineering scripts, and model-training workflows across various data domains, including speech processing, audio pipeline engineering, and predictive analytics. Optimized for reproducible workflows.
 
 ---
 
-## 📂 Repository Structure
+## 📂 Repository Structure & Project Modules
 
-* **`whisper_v3_large_turbo.py`**: Parameter-efficient automatic speech recognition (ASR) model fine-tuning pipeline.
-* *(Add your other model notebooks here as you upload them!)*
+### 1. 🎙️ Audio Pipeline & Preprocessing Tools
+
+* **`audio_splitter_3.py`**: An advanced Voice Activity Detection (VAD) audio-splitting pipeline. It leverages `silero-vad` to dynamically segment long audio tracks into optimal training lengths ($<30$ seconds). Features a back-scanning energy search to intelligently cut audio at natural silence gaps/word boundaries instead of blind hard cuts.
+* **`Audio_Cleaner.ipynb`**: A comprehensive audio preprocessing and noise reduction utility designed to strip background static, balance audio levels, and isolate speech signals to create clean training datasets.
+* **`EDA on ANV Dataset.ipynb`**: An exploratory data analysis notebook specifically evaluating speech audio and transcript metrics. It handles audio quality assessments (clipping rates, silence ratios, RMS loudness) and uncovers orthographic inconsistencies like severe diacritic variations in low-resource language transcripts.
+
+### 2. 🚀 Model Training Pipelines
+
+* **`whisper_v3_large_turbo.py`**: An end-to-end pipeline to fine-tune OpenAI's `whisper-large-v3-turbo` on low-resource African languages (e.g., Kikuyu) using parameter-efficient **LoRA** framework. It features a custom `WhisperCTCAuxTrainer` which implements an auxiliary Connectionist Temporal Classification (CTC) loss ($\lambda = 0.3$) onto the encoder hidden states to drastically speed up low-resource convergence.
 
 ---
 
-## 🎙️ Project Feature: Whisper Large-v3-Turbo Fine-Tuning for Kikuyu
+## 🎙️ Project Feature Deep-Dives
 
-An end-to-end pipeline to fine-tune OpenAI's `whisper-large-v3-turbo` on the Kikuyu language using LoRA (Low-Rank Adaptation) and a custom Connectionist Temporal Classification (CTC) auxiliary loss.
-
-### 🚀 Features & Architecture
-
+### Module A: Whisper Large-v3-Turbo Fine-Tuning
 * **Model Base:** `openai/whisper-large-v3-turbo`
-* **Target Language:** Kikuyu (`kik`) with Swahili fallback tokenizer parameters configured for initial vocabulary matching.
-* **Parameter-Efficient Tuning:** Uses Hugging Face `peft` with **LoRA** targeting `q_proj` and `v_proj` layers to minimize VRAM footprint.
-* **Dual-Loss Optimization:** Features a custom `WhisperCTCAuxTrainer` that introduces a **CTC Auxiliary Loss** ($\lambda = 0.3$) applied to the encoder hidden states, significantly accelerating low-resource speech recognition convergence.
-* **Robust Preprocessing:** Implements Unicode Normalization (NFC) and custom diacritic mapping tables specific to orthographic representations of Kikuyu vowels.
+* **Tuning Strategy:** Hugging Face `peft` with LoRA matrices applied to attention project projections (`q_proj`, `v_proj`).
+* **Hyperparameters:** Max Steps: `500` | Warmup: `50` | Batch Size: `4` per device (Effective `8` via grad accumulation) | Mixed Precision: `fp16`.
 
-### 📊 Dataset Configuration
-
-The training pipeline consumes the streaming dataset `Anv-ke/kikuyu` from Hugging Face:
-* **Chunk Windowing:** Configured by default to process chunks of 10,000 samples.
-* **Train/Test Split:** 90% Training / 10% Validation split with standard deterministic seeding.
-* **Duration Filtering:** Keeps audio clips strictly bounded between 0.5 seconds and 15.0 seconds.
-* **Audio Features:** Resampled dynamically to 16 kHz mono-channel arrays.
-
-### ⚙️ Training Hyperparameters
-
-| Parameter | Value | Description |
-| :--- | :--- | :--- |
-| **Learning Rate** | `1e-4` | Peak learning rate with AdamW |
-| **Warmup Steps** | `50` | Linear warmup length |
-| **Max Steps** | `500` | Total training iterations |
-| **Per-Device Batch Size** | `4` | Batch size handled simultaneously per device |
-| **Gradient Accumulation** | `2` | Number of updates to accumulate before backprop (Effective batch size of 8) |
-| **Mixed Precision** | `fp16` | Half-precision floating-point format training activated |
-| **LoRA Rank (r)** | `32` | Dimensional factor for low-rank matrices |
-| **LoRA Alpha ($\alpha$)** | `64` | Scaling factor for adapter weights |
+### Module B: Energy-Based VAD Audio Splitter (`audio_splitter_3.py`)
+* **Frameworks:** `torch`, `torchaudio`, `pydub`, `soundfile`
+* **Mechanic:** Instead of standard absolute slicing, it checks a configurable 5-second window backward from the maximum length boundary to pinpoint the quietest 100ms window (word/sentence boundaries), minimizing broken or truncated mid-word segments.
 
 ---
 
-## 🛠️ Requirements & Environment
+## 🛠️ General Requirements & Dependencies
 
-Dependencies vary by project module. For general deep learning and speech modeling components, ensure your environment has access to:
-* `torch`, `transformers`, `peft`, `datasets`, `accelerate`, `bitsandbytes`, `jiwer`, `librosa`, `soundfile`, `evaluate`, `unsloth`
+To set up the complete suite across all audio preprocessing, analytics, and modeling tasks, install the collective environment dependencies:
+
+```bash
+pip install torch torchaudio transformers peft datasets accelerate bitsandbytes jiwer librosa soundfile evaluate unsloth pydub ipywidgets
+
+
+
 
 
