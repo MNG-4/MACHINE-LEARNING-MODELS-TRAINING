@@ -48,7 +48,7 @@ LABEL_MAP = {
     "speech":       "speech",
 }
 
-print("✅ Config loaded.")
+print(" Config loaded. ")
 print(f"   Dataset root    : {DATASET_ROOT}")
 print(f"   Max Timesteps   : {MAX_TIMESTEPS} frames")
 print(f"   Classes         : {CLASSES}")
@@ -86,11 +86,11 @@ def pair_files(dataset_root):
             errors.append(f"Missing label file: {label_name}  (for {wav_path.name})")
 
     if errors:
-        print("⚠️  Pairing warnings:")
+        print(" Pairing warnings: ")
         for e in errors:
             print(f"    {e}")
 
-    print(f"✅ Paired {len(pairs)} wav+label file(s).")
+    print(f"Paired {len(pairs)} wav+label file(s).")
     return pairs
 
 pairs = pair_files(DATASET_ROOT)
@@ -168,7 +168,7 @@ def extract_mfcc_features(segment_audio, sr=SAMPLE_RATE):
     features = np.concatenate([mfcc, delta, delta2], axis=0).T  # Returns shape (T, 120)
     return features.astype(np.float32)
 
-print("✅ Advanced Feature extraction and Augmentation pipelines initialized.")
+print("Advanced Feature extraction and Augmentation pipelines initialized.")
 
 from tqdm.notebook import tqdm
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -181,7 +181,7 @@ for wav_path, label_path in tqdm(pairs, desc="Processing Audio Sequences"):
         audio    = load_audio(wav_path)
         segments = parse_label_file(label_path)
     except Exception as e:
-        print(f"⚠️  Skipping {wav_path.name}: {e}")
+        print(f" Skipping {wav_path.name}: {e} ")
         continue
 
     for (start, end, class_idx) in segments:
@@ -216,7 +216,7 @@ X_padded = pad_sequences(X_list, maxlen=MAX_TIMESTEPS, dtype='float32',
                          padding='post', truncating='post')
 y = np.array(y_list, dtype=np.int32)
 
-print(f"\\n✅ Temporal Dataset Built!")
+print(f"\\n Temporal Dataset Built!")
 print(f"   X Shape (Sequences): {X_padded.shape} -> (Samples, Timesteps, Features)")
 print(f"   y Shape            : {y.shape}")
 
@@ -224,7 +224,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np # Ensure numpy is imported for empty array creation
 
 if X_padded.shape[0] == 0:
-    print("⚠️  Warning: X_padded is empty. Cannot perform train-test split. Please check previous cells for data loading and feature extraction issues.")
+    print(" Warning: X_padded is empty. Cannot perform train-test split. Please check previous cells for data loading and feature extraction issues.")
     # Initialize empty split arrays to prevent further errors if the notebook continues
     X_train, X_val, X_test = np.array([]), np.array([]), np.array([])
     y_train, y_val, y_test = np.array([]), np.array([]), np.array([])
@@ -251,7 +251,7 @@ else:
     np.save(NORM_MEAN_PATH, mean)
     np.save(NORM_STD_PATH,  std)
 
-    print(f"✅ Sequence Splits — Train: {X_train.shape} | Val: {X_val.shape} | Test: {X_test.shape}")
+    print(f" Sequence Splits — Train: {X_train.shape} | Val: {X_val.shape} | Test: {X_test.shape}")
 
 import tensorflow as tf
 from tensorflow.keras import layers, models, optimizers
@@ -423,7 +423,7 @@ def _clean_file(input_path, output_path, sr=SAMPLE_RATE):
     speech_hops = [i for i, l in enumerate(labels) if l == IDX_SPEECH]
 
     if not speech_hops:
-        print("   ⚠️  No speech detected — saving original unchanged.")
+        print(" No speech detected — saving original unchanged. ")
         sf.write(output_path, audio, sr)
         return audio, audio, labels, times
 
@@ -458,7 +458,7 @@ def _plot_timeline(ax, labels, times, hop_sec=0.1):
 # MAIN — Upload → Clean → Display → Download
 # ════════════════════════════════════════════════════════════
 
-print("📂  Select one or more .wav or .mp3 files to upload …\n")
+print(" Select one or more .wav or .mp3 files to upload …\n ")
 uploaded = files.upload()   # ← opens file picker
 
 if not uploaded:
@@ -471,7 +471,7 @@ else:
         # ── Check extension ──────────────────────────────────
         ext = Path(filename).suffix.lower()
         if ext not in SUPPORTED_EXTENSIONS:
-            print(f"⚠️  Skipping '{filename}' — unsupported format '{ext}'. "
+            print(f" Skipping '{filename}' — unsupported format '{ext}'. "
                   f"Please upload .wav or .mp3 files only.")
             skipped.append(filename)
             continue
@@ -486,7 +486,7 @@ else:
             f.write(file_bytes)
 
         fmt_label = "MP3" if ext == ".mp3" else "WAV"
-        print(f"\n✅ Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
+        print(f"\n Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
 
         # ── Run cleaner ──────────────────────────────────────
         print("   Running LSTM cleaner …")
@@ -538,7 +538,7 @@ else:
 
     # ── Summary ──────────────────────────────────────────────
     processed = len(uploaded) - len(skipped)
-    print(f"\n🎉  Done — {processed} file(s) cleaned and downloaded.", end="")
+    print(f"\n Done — {processed} file(s) cleaned and downloaded.", end="")
     if skipped:
         print(f"  {len(skipped)} skipped: {', '.join(skipped)}", end="")
     print()
@@ -639,7 +639,7 @@ def _clean_file(input_path, output_path, sr=SAMPLE_RATE):
     speech_hops = [i for i, l in enumerate(labels) if l == IDX_SPEECH]
 
     if not speech_hops:
-        print("   ⚠️  No speech detected — saving original unchanged.")
+        print(" No speech detected — saving original unchanged. ")
         sf.write(output_path, audio, sr)
         return audio, audio, labels, times
 
@@ -674,7 +674,7 @@ def _plot_timeline(ax, labels, times, hop_sec=0.1):
 # MAIN — Upload → Clean → Display → Download
 # ════════════════════════════════════════════════════════════
 
-print("📂  Select one or more .wav or .mp3 files to upload …\n")
+print(" Select one or more .wav or .mp3 files to upload …\n ")
 uploaded = files.upload()   # ← opens file picker
 
 if not uploaded:
@@ -687,7 +687,7 @@ else:
         # ── Check extension ──────────────────────────────────
         ext = Path(filename).suffix.lower()
         if ext not in SUPPORTED_EXTENSIONS:
-            print(f"⚠️  Skipping '{filename}' — unsupported format '{ext}'. "
+            print(f" Skipping '{filename}' — unsupported format '{ext}'. "
                   f"Please upload .wav or .mp3 files only.")
             skipped.append(filename)
             continue
@@ -702,7 +702,7 @@ else:
             f.write(file_bytes)
 
         fmt_label = "MP3" if ext == ".mp3" else "WAV"
-        print(f"\n✅ Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
+        print(f"\n Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
 
         # ── Run cleaner ──────────────────────────────────────
         print("   Running LSTM cleaner …")
@@ -754,7 +754,7 @@ else:
 
     # ── Summary ──────────────────────────────────────────────
     processed = len(uploaded) - len(skipped)
-    print(f"\n🎉  Done — {processed} file(s) cleaned and downloaded.", end="")
+    print(f"\n  Done — {processed} file(s) cleaned and downloaded.", end="")
     if skipped:
         print(f"  {len(skipped)} skipped: {', '.join(skipped)}", end="")
     print()
@@ -855,7 +855,7 @@ def _clean_file(input_path, output_path, sr=SAMPLE_RATE):
     speech_hops = [i for i, l in enumerate(labels) if l == IDX_SPEECH]
 
     if not speech_hops:
-        print("   ⚠️  No speech detected — saving original unchanged.")
+        print(" No speech detected — saving original unchanged. ")
         sf.write(output_path, audio, sr)
         return audio, audio, labels, times
 
@@ -890,7 +890,7 @@ def _plot_timeline(ax, labels, times, hop_sec=0.1):
 # MAIN — Upload → Clean → Display → Download
 # ════════════════════════════════════════════════════════════
 
-print("📂  Select one or more .wav or .mp3 files to upload …\n")
+print(" Select one or more .wav or .mp3 files to upload …\n")
 uploaded = files.upload()   # ← opens file picker
 
 if not uploaded:
@@ -903,7 +903,7 @@ else:
         # ── Check extension ──────────────────────────────────
         ext = Path(filename).suffix.lower()
         if ext not in SUPPORTED_EXTENSIONS:
-            print(f"⚠️  Skipping '{filename}' — unsupported format '{ext}'. "
+            print(f" Skipping '{filename}' — unsupported format '{ext}'. "
                   f"Please upload .wav or .mp3 files only.")
             skipped.append(filename)
             continue
@@ -918,7 +918,7 @@ else:
             f.write(file_bytes)
 
         fmt_label = "MP3" if ext == ".mp3" else "WAV"
-        print(f"\n✅ Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
+        print(f"\n Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
 
         # ── Run cleaner ──────────────────────────────────────
         print("   Running LSTM cleaner …")
@@ -970,7 +970,7 @@ else:
 
     # ── Summary ──────────────────────────────────────────────
     processed = len(uploaded) - len(skipped)
-    print(f"\n🎉  Done — {processed} file(s) cleaned and downloaded.", end="")
+    print(f"\n Done — {processed} file(s) cleaned and downloaded.", end="")
     if skipped:
         print(f"  {len(skipped)} skipped: {', '.join(skipped)}", end="")
     print()
@@ -1071,7 +1071,7 @@ def _clean_file(input_path, output_path, sr=SAMPLE_RATE):
     speech_hops = [i for i, l in enumerate(labels) if l == IDX_SPEECH]
 
     if not speech_hops:
-        print("   ⚠️  No speech detected — saving original unchanged.")
+        print(" No speech detected — saving original unchanged. ")
         sf.write(output_path, audio, sr)
         return audio, audio, labels, times
 
@@ -1106,7 +1106,7 @@ def _plot_timeline(ax, labels, times, hop_sec=0.1):
 # MAIN — Upload → Clean → Display → Download
 # ════════════════════════════════════════════════════════════
 
-print("📂  Select one or more .wav or .mp3 files to upload …\n")
+print(" Select one or more .wav or .mp3 files to upload …\n ")
 uploaded = files.upload()   # ← opens file picker
 
 if not uploaded:
@@ -1119,7 +1119,7 @@ else:
         # ── Check extension ──────────────────────────────────
         ext = Path(filename).suffix.lower()
         if ext not in SUPPORTED_EXTENSIONS:
-            print(f"⚠️  Skipping '{filename}' — unsupported format '{ext}'. "
+            print(f" Skipping '{filename}' — unsupported format '{ext}'. "
                   f"Please upload .wav or .mp3 files only.")
             skipped.append(filename)
             continue
@@ -1134,7 +1134,7 @@ else:
             f.write(file_bytes)
 
         fmt_label = "MP3" if ext == ".mp3" else "WAV"
-        print(f"\n✅ Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
+        print(f"\n Uploaded : {filename}  ({len(file_bytes)/1024:.1f} KB)  [{fmt_label}]")
 
         # ── Run cleaner ──────────────────────────────────────
         print("   Running LSTM cleaner …")
@@ -1186,7 +1186,7 @@ else:
 
     # ── Summary ──────────────────────────────────────────────
     processed = len(uploaded) - len(skipped)
-    print(f"\n🎉  Done — {processed} file(s) cleaned and downloaded.", end="")
+    print(f"\n Done — {processed} file(s) cleaned and downloaded.", end="")
     if skipped:
         print(f"  {len(skipped)} skipped: {', '.join(skipped)}", end="")
     print()
