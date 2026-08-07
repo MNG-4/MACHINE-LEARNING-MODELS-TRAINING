@@ -15,7 +15,7 @@ from google.colab import userdata
 from huggingface_hub import login
 
 login(token=userdata.get('EDA_TOKEN'))
-print("✅ Authenticated with HuggingFace")
+print("Authenticated with HuggingFace")
 
 # ── USER CONFIGURATION — edit these to match your dataset ───
 DATASET_NAME   = "Anv-ke/kikuyu"  # ← CHANGE THIS
@@ -40,7 +40,7 @@ warnings.filterwarnings("ignore")
 
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams.update({"figure.dpi": 120, "font.size": 11})
-print("✅ Libraries loaded")
+print("Libraries loaded")
 
 print(f"Streaming first {SAMPLE_SIZE} examples from '{DATASET_NAME}'...")
 
@@ -118,7 +118,7 @@ for i, ex in enumerate(stream):
         print(f"  Processed {i+1}/{SAMPLE_SIZE}...")
 
 df = pd.DataFrame(records)
-print(f"\n✅ Collected {len(df)} samples. Ready for EDA.")
+print(f"\nCollected {len(df)} samples. Ready for EDA.")
 
 print("\n" + "="*60)
 print("SECTION 1: DATA VOLUME & COVERAGE")
@@ -166,7 +166,7 @@ axes[2].fill_between(range(len(cumulative)), cumulative, alpha=0.2, color="#C44E
 plt.tight_layout()
 plt.savefig("eda_section1_volume.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section1_volume.png")
+print("Saved: eda_section1_volume.png")
 
 print("\n" + "="*60)
 print("SECTION 2: AUDIO QUALITY ANALYSIS")
@@ -240,7 +240,7 @@ plt.colorbar(sm, ax=axes[1,2], label="Silence Ratio")
 plt.tight_layout()
 plt.savefig("eda_section2_audio_quality.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section2_audio_quality.png")
+print("Saved: eda_section2_audio_quality.png")
 
 print("\n" + "="*60)
 print("SECTION 3: TRANSCRIPT QUALITY & LINGUISTIC ANALYSIS")
@@ -310,14 +310,14 @@ axes[1,1].set_title("Transcript Quality Issues Breakdown")
 plt.tight_layout()
 plt.savefig("eda_section3_transcript_quality.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section3_transcript_quality.png")
+print("Saved: eda_section3_transcript_quality.png")
 
 print("\n" + "="*60)
 print("SECTION 4: SPEAKER DIVERSITY")
 print("="*60)
 
 if "speaker_id" not in df.columns:
-    print("⚠️  No speaker_id column found in this dataset.")
+    print("   No speaker_id column found in this dataset.")
     print("   Speaker diversity analysis requires a speaker_id column.")
     print("   Skipping this section.")
 else:
@@ -363,7 +363,7 @@ else:
     plt.tight_layout()
     plt.savefig("eda_section4_speaker_diversity.png", dpi=150, bbox_inches="tight")
     plt.show()
-    print("✅ Saved: eda_section4_speaker_diversity.png")
+    print("Saved: eda_section4_speaker_diversity.png")
 
 print("\n" + "="*60)
 print("SECTION 5: UTTERANCE-LEVEL STATISTICS")
@@ -424,7 +424,7 @@ axes[1,2].grid(True)
 plt.tight_layout()
 plt.savefig("eda_section5_utterance_stats.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section5_utterance_stats.png")
+print("Saved: eda_section5_utterance_stats.png")
 
 print("\n" + "="*60)
 print("SECTION 6: TEXT-AUDIO ALIGNMENT INTEGRITY")
@@ -482,7 +482,7 @@ axes[2].set_ylabel("Word Count")
 plt.tight_layout()
 plt.savefig("eda_section6_alignment.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section6_alignment.png")
+print("Saved: eda_section6_alignment.png")
 
 print("\n" + "="*60)
 print("SECTION 7: PHONEME & GRAPHEME COVERAGE")
@@ -553,7 +553,7 @@ axes[2].tick_params(axis="x", rotation=60, labelsize=8)
 plt.tight_layout()
 plt.savefig("eda_section7_grapheme_coverage.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section7_grapheme_coverage.png")
+print("Saved: eda_section7_grapheme_coverage.png")
 
 print("\n" + "="*60)
 print("SECTION 8: DOMAIN & TOPIC DIVERSITY")
@@ -619,7 +619,7 @@ axes[1].tick_params(axis="x", rotation=30)
 plt.tight_layout()
 plt.savefig("eda_section8_domain_diversity.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section8_domain_diversity.png")
+print("Saved: eda_section8_domain_diversity.png")
 
 print("\n" + "="*60)
 print("SECTION 9: DATA PROVENANCE & LICENSING")
@@ -675,7 +675,7 @@ ax.set_ylabel("Utterance Count")
 plt.tight_layout()
 plt.savefig("eda_section9_provenance.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section9_provenance.png")
+print("Saved: eda_section9_provenance.png")
 
 print("\n" + "="*60)
 print("SECTION 10: NOISE & ANOMALY DETECTION")
@@ -772,7 +772,7 @@ if len(df_anomalies) > 0:
 plt.tight_layout()
 plt.savefig("eda_section10_anomalies.png", dpi=150, bbox_inches="tight")
 plt.show()
-print("✅ Saved: eda_section10_anomalies.png")
+print("Saved: eda_section10_anomalies.png")
 
 print("\n" + "="*60)
 print("FULL EDA SUMMARY REPORT")
@@ -938,7 +938,7 @@ if "inferred_domain" in df.columns:
 else:
     stats["domain"] = None
 
-print("✅ Stats built successfully")
+print("Stats built successfully")
 
 def score_volume(s):
     issues, positives, actions = [], [], []
@@ -1193,12 +1193,12 @@ for name, scorer, stat in sections:
     print(f"\n── {name}  [{stars}  {score}/5] ──")
 
     if positives:
-        print("  ✅ What is good:")
+        print(" What is good:")
         for p in positives:
             print_bullet("•", p)
 
     if issues:
-        print("  ⚠️  Concerns:")
+        print("Concerns:")
         for issue in issues:
             print_bullet("•", issue)
 
