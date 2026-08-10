@@ -1195,6 +1195,6 @@ for name, scorer, stat in sections:
             print_bullet("•", issue)
 
     if actions:
-        print("  🔧 Actions:")
+        print("Actions:")
         for i, a in enumerate(actions, 1):
             print_bullet(f"{i}.", a)
